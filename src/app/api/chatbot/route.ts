@@ -9,13 +9,15 @@ export async function POST(req: NextRequest) {
       headers: {
         'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': process.env.DOMAIN || 'http://localhost:3000',
+        'X-Title': 'JEEVAN Animal Welfare',
       },
       body: JSON.stringify({
-        model: 'mistralai/mixtral-8x7b-instruct',
+        model: 'mistralai/mistral-7b-instruct:free',
         messages: [
           {
             role: 'system',
-            content: 'You are a helpful and friendly dog care assistant.',
+            content: 'You are a helpful and friendly animal care assistant for JEEVAN Animal Welfare.',
           },
           ...messages,
         ],
@@ -24,14 +26,16 @@ export async function POST(req: NextRequest) {
 
     const data = await response.json();
 
-    if (!data.choices || !data.choices[0]) {
-      return NextResponse.json({ message: '⚠️ Error: Failed to respond.' }, { status: 500 });
+    // Log full response for debugging
+    if (!response.ok || !data.choices || !data.choices[0]) {
+      console.error('OpenRouter API error:', JSON.stringify(data));
+      const errMsg = data?.error?.message || 'Failed to respond.';
+      return NextResponse.json({ message: `⚠️ Error: ${errMsg}` }, { status: 500 });
     }
 
     return NextResponse.json({ message: data.choices[0].message.content });
   } catch (err: unknown) {
     console.error('Error in chatbot route:', err);
     return NextResponse.json({ message: '⚠️ Error: Unable to reach server.' }, { status: 500 });
-
   }
 }
