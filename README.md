@@ -175,5 +175,5 @@ Please fork the repo, make your changes, and submit a PR.
 
 ## 📄 License
 
-**© 2025 Pratham Kulchandani — Jeevan Project** — All rights reserved.
+**© 2026 Pratham Kulchandani — Jeevan Project** — All rights reserved.
 

@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Resend } from "resend";
+import nodemailer from "nodemailer";
 import { render } from "@react-email/render";
 import React from "react";
 import VerificationEmail from "../../Emails/VerificationEmail";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface SendEmailParams {
   email: string;
@@ -21,18 +19,23 @@ export const sendEmail = async ({ email, emailType, name, otp }: SendEmailParams
 
     const subject = emailType === "verify" ? "Verify your account" : "Reset your password";
 
-    const { data, error } = await resend.emails.send({
-      from: "Jeevan <onboarding@resend.dev>",
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_FROM,
+        pass: process.env.PASS,
+      },
+    });
+
+    const mailOptions = {
+      from: `"Jeevan" <${process.env.EMAIL_FROM}>`,
       to: email,
       subject,
       html: htmlContent,
-    });
+    };
 
-    if (error) {
-      throw new Error(error.message);
-    }
-
-    return data;
+    const info = await transporter.sendMail(mailOptions);
+    return info;
   } catch (error: any) {
     throw new Error(error.message);
   }
