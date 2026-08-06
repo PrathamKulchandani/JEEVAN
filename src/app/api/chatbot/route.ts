@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
         'X-Title': 'JEEVAN Animal Welfare',
       },
       body: JSON.stringify({
-        model: 'mistralai/mistral-7b-instruct:free',
+        model: 'inclusionai/ling-3.0-flash:free',
         messages: [
           {
             role: 'system',
